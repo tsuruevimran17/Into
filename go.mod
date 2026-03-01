@@ -1,4 +1,4 @@
-module IntoFood
+module Into
 
 go 1.25.5
 
