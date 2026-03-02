@@ -1,22 +1,26 @@
-package config
+package main
 
 import (
-	"context"
-	"database/sql"
 	"fmt"
 	"log/slog"
 	"net/url"
 	"os"
-	"time"
 
 	"github.com/joho/godotenv"
-	_ "github.com/jackc/pgx/v5/stdlib"
+
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
-func SetUpDatabaseConnection(logger *slog.Logger) *sql.DB {
+func main() {
+	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelInfo,
+	}))
+
 	if err := godotenv.Load(); err != nil {
 		logger.Error("Error loading .env file", "error", err)
-		panic(err)
+		os.Exit(1)
 	}
 
 	dbHost := os.Getenv("DB_HOST")
@@ -38,22 +42,22 @@ func SetUpDatabaseConnection(logger *slog.Logger) *sql.DB {
 	q := u.Query()
 	q.Set("sslmode", dbSSL)
 	u.RawQuery = q.Encode()
+	dbURL := u.String()
 
-	db, err := sql.Open("pgx", u.String())
+	m, err := migrate.New("file://migrations", dbURL)
 	if err != nil {
-		logger.Error("Failed to initialize database", "error", err)
-		panic(err)
+		logger.Error("Failed to initialize migrations", "error", err)
+		os.Exit(1)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	if err := db.PingContext(ctx); err != nil {
-		logger.Error("Failed to ping database", "error", err)
-
-
-		panic(err)
+	if err := m.Up(); err != nil {
+		if err == migrate.ErrNoChange {
+			logger.Info("No migrations to apply")
+			return
+		}
+		logger.Error("Migration failed", "error", err)
+		os.Exit(1)
 	}
 
-	logger.Info("Successfully connected to the database")
-	return db
+	logger.Info("Migrations applied")
 }
