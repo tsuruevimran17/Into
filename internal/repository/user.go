@@ -22,9 +22,9 @@ func NewUserRepository(db *sql.DB) UserRepository {
 func (r *userRepository) CreateUser(ctx context.Context,req *models.User) (*models.User, error) {
 
 	query := `
-	INSERT INTO users (username, email)
-	VALUES ($1, $2)
-	RETURNING id, username, email
+	INSERT INTO users (username, email, role, password_hash)
+	VALUES ($1, $2, $3, $4)
+	RETURNING id, username, email, role
 	`
 
 	var user models.User
@@ -34,11 +34,14 @@ func (r *userRepository) CreateUser(ctx context.Context,req *models.User) (*mode
 	QueryRowContext(ctx,
 	query,
 	req.Username,
-	req.Email).
+	req.Email,
+	req.Role,
+	req.PasswordHash).
 
 	Scan(&user.ID,
 		&user.Username,
-		&user.Email)
+		&user.Email,
+		&user.Role)
 
 	if err != nil {
 		return nil, err
