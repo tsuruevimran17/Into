@@ -18,9 +18,7 @@ func NewUserRepository(db *sql.DB) UserRepository {
 	return &userRepository{db: db}
 }
 
-
-func (r *userRepository) CreateUser(ctx context.Context,req *models.User) (*models.User, error) {
-
+func (r *userRepository) CreateUser(ctx context.Context, req *models.User) (*models.User, error) {
 	query := `
 	INSERT INTO users (username, email, role, password_hash)
 	VALUES ($1, $2, $3, $4)
@@ -29,15 +27,12 @@ func (r *userRepository) CreateUser(ctx context.Context,req *models.User) (*mode
 
 	var user models.User
 
-	err := r.db.
-
-	QueryRowContext(ctx,
+	err := r.db.QueryRowContext(ctx,
 	query,
 	req.Username,
 	req.Email,
 	req.Role,
 	req.PasswordHash).
-
 	Scan(&user.ID,
 		&user.Username,
 		&user.Email,

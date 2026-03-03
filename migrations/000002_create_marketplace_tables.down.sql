@@ -1,0 +1,26 @@
+DROP TABLE IF EXISTS audit_log;
+DROP TABLE IF EXISTS product_ratings;
+DROP TABLE IF EXISTS reviews;
+DROP TABLE IF EXISTS payouts;
+DROP TABLE IF EXISTS ledger_entries;
+DROP TABLE IF EXISTS payment_events;
+DROP TABLE IF EXISTS payments;
+DROP TABLE IF EXISTS order_items;
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS cart_items;
+DROP TABLE IF EXISTS carts;
+DROP TABLE IF EXISTS inventory;
+DROP TABLE IF EXISTS product_media;
+DROP TABLE IF EXISTS skus;
+DROP TABLE IF EXISTS products;
+DROP TABLE IF EXISTS category_attributes;
+DROP TABLE IF EXISTS attributes;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS seller_profiles;
+DROP TABLE IF EXISTS sellers;
+DROP TABLE IF EXISTS user_addresses;
+DROP TABLE IF EXISTS user_profiles;
+
+DROP INDEX IF EXISTS idx_users_deleted_at;
+DROP INDEX IF EXISTS ux_users_email;
+DROP INDEX IF EXISTS ux_users_username;
