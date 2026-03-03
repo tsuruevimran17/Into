@@ -17,7 +17,7 @@ type UserProfile struct {
 	LastName  string    `json:"last_name"`
 	Phone     string    `json:"phone"`
 	BirthDate time.Time `json:"birth_date"`
-	AvatarURL string    `json:"avatar_url"`
+
 }
 
 type UserAddress struct {
