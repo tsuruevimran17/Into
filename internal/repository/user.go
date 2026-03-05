@@ -4,12 +4,15 @@ import (
 	"Into/internal/models"
 	"context"
 	"database/sql"
+
 )
 
 type UserRepository interface {
 	CreateUser(ctx context.Context, req *models.User) (*models.User, error)
 	CreateUserProfile(ctx context.Context, req *models.UserProfile) (*models.UserProfile, error)
-	UpdateUserProfile(ctx context.Context, req *models.UserProfile) (*models.UserProfile, error)
+	UserUpdateProfile(ctx context.Context, req *models.UserProfile)(*models.UserProfile, error)
+	DeleteUser(ctx context.Context, ID uint) error
+	GetByID(ctx context.Context, ID uint) (models.User, error)
 }
 
 type userRepository struct {
@@ -114,4 +117,28 @@ func (r *userRepository) UpdateUserProfile(ctx context.Context, req *models.User
 	}
 
 	return &profile, nil
+}
+
+func (r *userRepository) DeleteUser(ctx context.Context, ID uint) error{
+
+	_, err := r.db.ExecContext(ctx, `DELETE FROM users WHERE id = $1`, ID)
+
+	return err
+}
+
+
+func (r *userRepository) GetByID(ctx context.Context, ID uint) (models.User, error) {
+
+	var user models.User
+
+	err := r.db.QueryRowContext(ctx,`
+	SELECT username, email
+	WHERE id = $1`, ID).
+	Scan(
+		&user.Username,
+		&user.Email,
+	)
+
+	return user, err
+	 
 }
