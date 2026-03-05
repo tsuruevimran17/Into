@@ -133,6 +133,7 @@ func (r *userRepository) GetByID(ctx context.Context, ID uint) (models.User, err
 
 	err := r.db.QueryRowContext(ctx,`
 	SELECT username, email
+	FROM users
 	WHERE id = $1`, ID).
 	Scan(
 		&user.Username,
