@@ -10,7 +10,7 @@ import (
 type UserRepository interface {
 	CreateUser(ctx context.Context, req *models.User) (*models.User, error)
 	CreateUserProfile(ctx context.Context, req *models.UserProfile) (*models.UserProfile, error)
-	UserUpdateProfile(ctx context.Context, req *models.UserProfile)(*models.UserProfile, error)
+	UpdateUserProfile(ctx context.Context, req *models.UserProfile) (*models.UserProfile, error)
 	DeleteUser(ctx context.Context, ID uint) error
 	GetByID(ctx context.Context, ID uint) (models.User, error)
 }
